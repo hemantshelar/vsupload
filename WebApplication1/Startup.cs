@@ -24,7 +24,10 @@ namespace WebApplication1
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc();
-			services.AddIdentityCore<MyUser>(options => { });
+			services.AddIdentityCore<MyUser>(options => 
+			{
+				
+			});
 			services.AddScoped<IUserStore<MyUser>>(s => 
 			{
 				return new MyStore();

@@ -85,16 +85,21 @@ namespace WebApplication1.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginModel loginModel)
 		{
-			var user = await this.userManager.FindByIdAsync(loginModel.UserName);
+			var user = await this.userManager.FindByNameAsync(loginModel.UserName);
 			if (  user != null  )
 			{
 				bool bValue = await this.userManager.CheckPasswordAsync(user, loginModel.Password);
 				if ( bValue == true )
 				{
-					ClaimsIdentity claimsIdentity = new ClaimsIdentity();
+					ClaimsIdentity claimsIdentity = new ClaimsIdentity("cookies");
+					claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
+					claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
 					await HttpContext.SignInAsync("cookies",new ClaimsPrincipal(claimsIdentity));
+					return RedirectToAction("About");
 				}
 			}
+			this.ModelState.AddModelError("", "Invalid username or password.");
+			return View();
 		}
 	}
 }

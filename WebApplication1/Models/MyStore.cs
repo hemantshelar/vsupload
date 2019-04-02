@@ -54,7 +54,8 @@ namespace WebApplication1.Models
 			MyUser myUser = null;
 			using (var conn = GetConnection())
 			{
-				var r = await conn.QueryFirstOrDefaultAsync<MyUser>($"SELECT * from MyUsers where NormalizedUserName = '{normalizedUserName}'");
+				var r = await conn.QueryFirstOrDefaultAsync<MyUser>($"SELECT * from MyUsers where NormalizedUserName = '{normalizedUserName.ToUpper()}'");
+				myUser = r;
 			}
 			return myUser;
 		}
