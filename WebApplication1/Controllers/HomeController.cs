@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.Models;
@@ -15,12 +16,13 @@ namespace WebApplication1.Controllers
 	public class HomeController : Controller
 	{
 		private readonly UserManager<MyUser> userManager = null;
+		private readonly IHttpContextAccessor httpContextAccessor = null;
 		//private readonly SignInManager<MyUser> signInManager = null;
 
-		public HomeController(UserManager<MyUser> userManager)
+		public HomeController(UserManager<MyUser> userManager,IHttpContextAccessor httpContextAccessor)
 		{
 			this.userManager = userManager;
-			
+			this.httpContextAccessor = httpContextAccessor;
 		}
 		public IActionResult Index()
 		{
@@ -31,8 +33,14 @@ namespace WebApplication1.Controllers
 		public IActionResult About()
 		{
 			ViewData["Message"] = "Your application description page.";
+			List<string> lst = new List<string>();
 
-			return View();
+			foreach (var item in httpContextAccessor.HttpContext.User.Claims)
+			{
+				var claim = $"{item.Type} :{item.Value}";
+				lst.Add(claim);
+			}
+			return View(lst);
 		}
 
 		public IActionResult Contact()
@@ -80,7 +88,6 @@ namespace WebApplication1.Controllers
 		{
 			return View();
 		}
-
 
 		[HttpPost]
 		public async Task<IActionResult> Login(LoginModel loginModel)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +35,7 @@ namespace WebApplication1
 			});
 			services.AddAuthentication("cookies")
 				.AddCookie("cookies", options => options.LoginPath = "/Home/Login");
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			
 		}
 
